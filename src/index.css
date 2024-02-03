@@ -1,0 +1,189 @@
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  background: #ffffff;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "IRANSansWeb" !important;
+  direction: rtl;
+  color: black;
+  /* background: #F5F6F8; */
+
+}
+
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@font-face {
+  font-family: IRANSansWeb;
+  src: url("./assets/fonts/ttf/IRANSansWeb.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: IRANSansWeb;
+  src: url("./assets/fonts/ttf/IRANSansWeb_Bold.ttf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: IRANSansWeb;
+
+  src: url("./assets/fonts/ttf/IRANSansWeb_Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: IRANSansWeb;
+
+  src: url("./assets/fonts/ttf/IRANSansWeb_Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: IRANSansWeb;
+  src: url("./assets/fonts/ttf/IRANSansWeb_UltraLight.ttf") format("truetype");
+
+  font-weight: 100;
+  font-style: normal;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.swiper-slide img {
+  display: flex;
+  width: 100%;
+}
+
+.swiper-pagination-bullet {
+  width: 20px;
+  height: 2px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  color: #000;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.swiper-pagination-bullet-active {
+  color: #fff;
+  background: #007aff;
+}
+
+/* .MuiPaper-root {
+  background: linear-gradient(135deg,
+      rgba(2, 23, 54, 0.9416360294117647) 70%,
+      rgba(99, 89, 200, 1) 100%);
+} */
+
+.MuiMenu-list {
+  background-color: #fff;
+}
+
+#ListItemButton:hover svg path {
+  fill: white;
+  /* background-color: #007aff; */
+}
+
+#ListItemButton:hover svg rect {
+  stroke: white;
+}
+
+#ListItemButton:hover {
+  background-color: #007aff;
+  color: white
+}
+
+#ListItemButton:hover #ListItemText {
+  color: white
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+
+::backdrop {
+  background-color: #F5F6F8;
+}
+
+:fullscreen,
+::backdrop {
+  background-color: #F5F6F8;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: transparent;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #45BFFF;
+}
+
+a {
+  text-decoration: none;
+}
+
+#refrigerating {
+  transform: rotate(35deg);
+}
+
+.datePicker {
+  background-color: #3A5DF0;
+  color: #fff;
+  text-align: center;
+  border-radius: 12px;
+  padding: 8px;
+}
+
+#auth::placeholder {
+  color: white;
+}

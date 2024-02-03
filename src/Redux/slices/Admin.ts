@@ -1,0 +1,468 @@
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import Axios from "../../utils/Request";
+// import { toastHandler } from "../../utils/setting";
+
+interface States {
+  loading: boolean;
+  tab: number;
+  doctors: [];
+  detailSection: number;
+  newUser: any;
+  refresh: boolean;
+  expertiseTitle: any;
+  room: any;
+  queueDt: any;
+  activeQueueCard: any;
+}
+const initialState = {
+  loading: false,
+  refresh: false,
+  tab: 1,
+  doctors: [],
+  detailSection: 1,
+  newUser: {
+    username: "",
+    password: "",
+    acl: [],
+  },
+  expertiseTitle: {
+    name: "",
+    media_id: 0,
+    list: [],
+    listTitle: [],
+    listExp: [],
+  },
+  room: {
+    name: "",
+    number: "",
+    media_id: "",
+    list: [],
+  },
+  queueDt: {
+    loading: true,
+    data: [],
+    AllAudios: [],
+  },
+  activeQueueCard: null,
+} as States;
+
+export const DoctorList = createAsyncThunk("admin/list", async () => {
+  return await Axios.get("api/v1/admin/list/full");
+});
+
+export const CreateNewUser = createAsyncThunk(
+  "admin/createNewUser",
+  async (_, { getState }) => {
+    const state = getState() as { admin: States };
+    const { username, password, acl } = state?.admin?.newUser;
+    let password_confirmation = password;
+    return await Axios.post("api/v1/admin/doctor", {
+      username,
+      password,
+      password_confirmation,
+      acl,
+    });
+  }
+);
+
+export const DeleteUser = createAsyncThunk(
+  "admin/ delete user",
+  async (doctor_id: string) => {
+    return await Axios.delete(`api/v1/admin/doctor/${doctor_id}`);
+  }
+);
+
+export const EditUser = createAsyncThunk(
+  "admin/ edit user",
+
+  async (doctor_id: string, { getState }) => {
+    const state = getState() as { admin: States };
+    const { username, password, acl } = state?.admin?.newUser;
+    let password_confirmation = password;
+    return await Axios.put(`api/v1/admin/doctor/${doctor_id}`, {
+      username,
+      password,
+      password_confirmation,
+      acl,
+    });
+  }
+);
+
+//*EXP
+
+export const createExpTitle = createAsyncThunk(
+  "admin/exp title",
+  async (is_title: boolean, { getState }) => {
+    const state = getState() as { admin: States };
+    const { name, media_id } = state?.admin.expertiseTitle;
+    return await Axios.post("api/v1/admin/expertise", {
+      is_title: is_title,
+      name,
+      media_id,
+    });
+  }
+);
+export const getExpTitleList = createAsyncThunk(
+  "admin/get expertise title list",
+  async () => {
+    return await Axios.get("api/v1/admin/expertise");
+  }
+);
+export const deleteExpertise = createAsyncThunk(
+  "admin/ delete expertise",
+  async (expertise: string) => {
+    return await Axios.delete(`api/v1/admin/expertise/${expertise}`);
+  }
+);
+export const EditExpTitle = createAsyncThunk(
+  "admin/edit expertise title",
+  async (
+    { expertise_id, is_title }: { expertise_id: string; is_title: boolean },
+    { getState }
+  ) => {
+    const state = getState() as { admin: States };
+    const { name, media_id } = state?.admin.expertiseTitle;
+    return await Axios.put(`api/v1/admin/expertise/${expertise_id}`, {
+      is_title: is_title,
+      name,
+      media_id,
+    });
+  }
+);
+
+//! Room
+export const createNewRoom = createAsyncThunk(
+  "admin/ new room",
+  async (_, { getState }) => {
+    const state = getState() as { admin: States };
+
+    const { name, number, media_id } = state.admin.room;
+    return await Axios.post("api/v1/admin/room", {
+      name,
+      number,
+      media_id,
+    });
+  }
+);
+export const getRoomList = createAsyncThunk("admin/get room list", async () => {
+  return await Axios.get("api/v1/admin/room");
+});
+
+export const deleteRoom = createAsyncThunk(
+  "admin/room delete",
+  async (room: string) => {
+    return await Axios.delete(`api/v1/admin/room/${room}`);
+  }
+);
+export const editRoom = createAsyncThunk(
+  "admin/room edit",
+  async (room_id: string, { getState }) => {
+    const state = getState() as { admin: States };
+    const { name, number, media_id } = state.admin.room;
+
+    return await Axios.put(`api/v1/admin/room/${room_id}`, {
+      name,
+      number,
+      media_id,
+    });
+  }
+);
+
+export const getAdminsListWithDoctor = createAsyncThunk(
+  "admin/getAdminList",
+  async (_, { getState, dispatch }) => {
+    const getstate = getState() as { admin: States };
+    return await Axios.get("api/v1/admin/list").then((res) => {
+      const differentData = getstate.admin?.queueDt?.data?.filter(
+        (dt: any) =>
+          !res?.data?.some(
+            (dt2: any) =>
+              dt?.current_turn_number === dt2?.current_turn_number &&
+              dt2?.current_turn_number != null
+          )
+      );
+      if (differentData?.length > 0) {
+        dispatch(getDocVoice(differentData));
+      }
+      return res;
+    });
+  }
+);
+
+export const getDocVoice = createAsyncThunk(
+  "admin/getDocVoice",
+  async (dt: any, { dispatch }) => {
+    for (const data of dt) {
+      let audios: any[] = [];
+      dispatch(setActiveQueueCard(data?.id)); // comment this later
+      await Axios.post("api/v1/admin/doctor/turn/voice", data).then(
+        async (res) => {
+          res?.data["num"]?.url ? audios.push(res?.data["num"]?.url) : null;
+          res?.data["numbers"]?.map((n: any) =>
+            n?.url ? audios.push(n?.url) : null
+          );
+          res?.data["room"]?.url ? audios.push(res?.data["room"]?.url) : null;
+          res?.data["room_num"]?.url
+            ? audios.push(res?.data["room_num"]?.url)
+            : null;
+          res?.data["title"]?.url ? audios.push(res?.data["title"]?.url) : null;
+          res?.data["expertise"]?.url
+            ? audios.push(res?.data["expertise"]?.url)
+            : null;
+          //UNCOMMENT THESE LATER
+          let prevData = JSON.parse(localStorage.getItem("audios")!) ?? [];
+          let datatoadd = { id: data?.id, audios };
+          prevData?.push(datatoadd);
+          localStorage.setItem("audios", JSON.stringify(prevData));
+
+          // const playAudio = async () => {
+          //   for (let i = 0; i < audios.length; i++) {
+          //     let audio = new Audio(audios[i]);
+          //     if (audio === undefined) {
+          //       console.log("tes", audio);
+          //     }
+          //     await audio.play();
+          //     await new Promise((resolve) =>
+          //       audio.addEventListener("ended", resolve)
+          //     );
+          //   }
+          // };
+
+          // Start playing audios
+          // await playAudio();
+          dispatch(setActiveQueueCard(null));
+          // dispatch(setAllAudios(audios));
+        }
+      );
+    }
+  }
+);
+
+export const admin = createSlice({
+  name: "admin",
+  initialState,
+  reducers: {
+    changeTabas: (state, { payload }) => {
+      state.tab = payload;
+    },
+    changeSection: (state, { payload }) => {
+      state.detailSection = payload;
+    },
+    addNewUserInfo: (state, { payload }) => {
+      if (payload.key !== "acl") {
+        state.newUser[payload.key] = payload.value;
+      } else {
+        state.newUser[payload.key] = payload.value;
+      }
+    },
+    setActiveQueueCard: (state, { payload }) => {
+      state.activeQueueCard = payload;
+    },
+    setAllAudios: (state, { payload }) => {
+      state.queueDt.AllAudios = payload;
+    },
+    setUserInfo: (state, { payload }) => {
+      for (let item in payload.info) {
+        if (item === "user_acl") {
+          state.newUser.acl = payload.info[item];
+        } else {
+          state.newUser[item] = payload.info[item];
+        }
+      }
+    },
+    setExpInfo: (state, { payload }) => {
+      for (let item in payload.info) {
+        state.expertiseTitle[item] = payload.info[item];
+      }
+    },
+    addExpTitleInfo: (state, { payload }) => {
+      state.expertiseTitle[payload.key] = payload.value;
+    },
+    addRoomInfo: (state, { payload }) => {
+      state.room[payload.key] = payload.value;
+    },
+    setRoomInfo: (state, { payload }) => {
+      for (let item in payload.info) {
+        state.room[item] = payload.info[item];
+      }
+    },
+  },
+  extraReducers: (builder) => {
+    //? list of doctors
+    builder.addCase(DoctorList.pending, (state, {}) => {
+      state.loading = true;
+    });
+    builder.addCase(DoctorList.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.doctors = (payload as any)?.data;
+      state.refresh = false;
+    });
+    builder.addCase(DoctorList.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    // ? create new user
+    builder.addCase(CreateNewUser.pending, (state, {}) => {
+      state.loading = true;
+    });
+    builder.addCase(CreateNewUser.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.doctors = (payload as any)?.data;
+      state.refresh = true;
+    });
+    builder.addCase(CreateNewUser.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    // ? delete new user
+    builder.addCase(DeleteUser.pending, (state, {}) => {
+      state.loading = false;
+    });
+    builder.addCase(DeleteUser.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.doctors = (payload as any)?.data;
+      state.refresh = true;
+    });
+    builder.addCase(DeleteUser.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    // ? edit new user
+    builder.addCase(EditUser.pending, (state, {}) => {
+      state.loading = false;
+    });
+    builder.addCase(EditUser.fulfilled, (state, {}) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(EditUser.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    //?admin/create exp title
+    builder.addCase(createExpTitle.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(createExpTitle.fulfilled, (state, {}) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(createExpTitle.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    //?admin/get exp title
+    builder.addCase(getExpTitleList.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getExpTitleList.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.refresh = false;
+      state.expertiseTitle.list = (payload as any).data;
+      let allList = (payload as any).data;
+      state.expertiseTitle.listTitle = allList.filter(
+        (item: any) => item.is_title === true
+      );
+      state.expertiseTitle.listExp = allList.filter(
+        (item: any) => item.is_title === false
+      );
+    });
+    builder.addCase(getExpTitleList.rejected, (state, {}) => {
+      state.loading = false;
+    });
+
+    //? delete expertise
+    builder.addCase(deleteExpertise.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteExpertise.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(deleteExpertise.rejected, (state) => {
+      state.loading = false;
+    });
+    //!? edit expertise
+    builder.addCase(EditExpTitle.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(EditExpTitle.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(EditExpTitle.rejected, (state) => {
+      state.loading = false;
+    });
+    //! create ROOM
+    builder.addCase(createNewRoom.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(createNewRoom.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(createNewRoom.rejected, (state) => {
+      state.loading = false;
+    });
+    //! get room list
+    builder.addCase(getRoomList.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getRoomList.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.refresh = false;
+      state.room.list = (payload as any)?.data;
+    });
+    builder.addCase(getRoomList.rejected, (state) => {
+      state.loading = false;
+    });
+
+    //! delete room
+    builder.addCase(deleteRoom.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteRoom.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(deleteRoom.rejected, (state) => {
+      state.loading = false;
+    });
+    //! edit room
+    builder.addCase(editRoom.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(editRoom.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(editRoom.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getAdminsListWithDoctor.pending, (state, {}) => {
+      state.queueDt.loading = true;
+    });
+    builder.addCase(getAdminsListWithDoctor.fulfilled, (state, { payload }) => {
+      state.queueDt.loading = false;
+      state.queueDt.data = (payload as any)?.data;
+    });
+    builder.addCase(getAdminsListWithDoctor.rejected, (state, {}) => {
+      state.queueDt.loading = false;
+    });
+  },
+});
+
+export const {
+  changeTabas,
+  changeSection,
+  addNewUserInfo,
+  setUserInfo,
+  addExpTitleInfo,
+  setExpInfo,
+  addRoomInfo,
+  setRoomInfo,
+  setActiveQueueCard,
+  setAllAudios,
+} = admin.actions;
+export default admin.reducer;
