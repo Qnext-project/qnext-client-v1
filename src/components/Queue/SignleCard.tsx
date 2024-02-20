@@ -48,7 +48,7 @@ export const SignleCard: React.FC<propType> = ({ data, activeQueueCard }) => {
             borderRadius: "12px",
           }}
         >
-          {`اتاق ${data && digitsEnToFa(data?.doc_info?.room)}`}
+          {`اتاق ${data?.doc_info!==null? digitsEnToFa(data?.doc_info?.room):""}`}
         </Typography>
         {/* <Box sx={{...center,flexDirection:"column"}}> */}
         <Typography
@@ -84,7 +84,7 @@ export const SignleCard: React.FC<propType> = ({ data, activeQueueCard }) => {
             textAlign: "center",
           }}
         >
-          {data && digitsEnToFa(parseInt(data?.current_turn_number))}
+          {data&& digitsEnToFa(parseInt(data?.current_turn_number))}
         </Typography>
       </Box>
     </Box>
