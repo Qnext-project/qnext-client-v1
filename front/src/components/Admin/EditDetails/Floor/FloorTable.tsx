@@ -7,14 +7,13 @@ import TableRow from "@mui/material/TableRow";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import { TitleExpEdit } from "../TitleExpEdit";
-import { getFloorList } from "../../../../Redux/slices/Admin";
-
+import { deleteFloor, getFloorList } from "../../../../Redux/slices/Admin";
+import { FloorEdit } from "./FloorEdit";
 
 export default function FloorTable() {
-  const { floor, refresh }: { floor: any; refresh: boolean } =
-    useSelector((state: any) => state.admin);
+  const { floor, refresh }: { floor: any; refresh: boolean } = useSelector(
+    (state: any) => state.admin
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,7 +27,7 @@ export default function FloorTable() {
             <TableCell sx={{ fontWeight: 600 }} align="center">
               عنوان
             </TableCell>
-  
+
             <TableCell sx={{ fontWeight: 600 }} align="center">
               عملیات
             </TableCell>
@@ -36,13 +35,11 @@ export default function FloorTable() {
         </TableHead>
         <TableBody>
           {floor.list?.map((row: any) => (
-  
             <TableRow
               key={row.id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell align="center">{row.name}</TableCell>
-
 
               <TableCell
                 align="center"
@@ -53,15 +50,9 @@ export default function FloorTable() {
                     cursor: "pointer",
                     "&:hover": { fill: (theme) => theme.palette.warning.main },
                   }}
-                //   onClick={() => dispatch<any>(deleteExpertise(row?.id))}
+                    onClick={() => dispatch<any>(deleteFloor(row?.id))}
                 />
-                <TitleExpEdit
-                  name={row?.name}
-                  media={row?.media_url}
-                  media_id={row?.media_id}
-                  row_id={row?.id}
-                  is_title={row?.is_title}
-                />
+                <FloorEdit name={row?.name} row_id={row?.id} />
               </TableCell>
             </TableRow>
           ))}

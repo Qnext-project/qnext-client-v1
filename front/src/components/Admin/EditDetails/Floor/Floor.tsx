@@ -5,24 +5,19 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 // import { styled } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
 
 import { useDispatch, useSelector } from "react-redux";
-import FloorTable from './FloorTable';
+import FloorTable from "./FloorTable";
 import { createNewFloor, setFloorInfo } from "../../../../Redux/slices/Admin";
-
-
 
 export const Floor: React.FC = () => {
   const dispatch = useDispatch();
   const { loading }: { loading: boolean } = useSelector(
     (state: any) => state.admin
   );
-
-  
-
 
   return (
     <Box sx={{}}>
@@ -37,8 +32,7 @@ export const Floor: React.FC = () => {
       </Typography>
       <Box sx={{ display: "flex", gap: "5px", my: 2 }}>
         <Box>
-  
-     <TextField
+          <TextField
             onChange={(e) =>
               dispatch(
                 setFloorInfo({
@@ -86,5 +80,3 @@ export const Floor: React.FC = () => {
     </Box>
   );
 };
-
-

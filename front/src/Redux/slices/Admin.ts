@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Axios from "../../utils/Request";
+import { toastHandler } from "../../utils/setting";
 // import { toastHandler } from "../../utils/setting";
 
 interface States {
@@ -234,14 +235,33 @@ export const createNewFloor = createAsyncThunk(
     const state = getState() as { admin: States };
 
     const { name } = state.admin.floor;
-    return await Axios.post("api/v1/room/floor", {
+    return await Axios.post("api/v1/admin/floors", {
       name,
     });
   }
 );
 export const getFloorList = createAsyncThunk("admin/floor list", async () => {
-  return await Axios.get("api/v1/room/floor");
+  return await Axios.get("api/v1/admin/floors");
 });
+
+export const deleteFloor = createAsyncThunk(
+  "admin/Floor delete",
+  async (floor_id: string) => {
+    return await Axios.delete(`api/v1/admin/floors/${floor_id}`);
+  }
+);
+
+export const editFloor = createAsyncThunk(
+  "admin/floor edit",
+  async (floor_id: string, { getState }) => {
+    const state = getState() as { admin: States };
+    const { name } = state.admin.floor;
+
+    return await Axios.put(`api/v1/admin/floors/${floor_id}`, {
+      name
+    });
+  }
+);
 
 export const admin = createSlice({
   name: "admin",
@@ -481,6 +501,29 @@ export const admin = createSlice({
       state.floor.list = (payload as any)?.data;
     });
     builder.addCase(getFloorList.rejected, (state) => {
+      state.loading = false;
+    });
+
+      builder.addCase(deleteFloor.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(deleteFloor.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+      toastHandler("با موفقیت حذف شد")
+    });
+    builder.addCase(deleteFloor.rejected, (state) => {
+      state.loading = false;
+    });
+        builder.addCase(editFloor.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(editFloor.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+       toastHandler("با موفقیت انجام شد")
+    });
+    builder.addCase(editFloor.rejected, (state) => {
       state.loading = false;
     });
   },
