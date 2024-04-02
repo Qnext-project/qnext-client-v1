@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { checkAuthUser, handleLogOut } from "../Redux/slices/Login";
 import { ExitToApp } from "@mui/icons-material";
+import SelectFloor from "../components/Queue/SelectFloor";
 function Home() {
   const center = {
     display: "flex",
@@ -118,45 +119,46 @@ function Home() {
           </Box>
         )}
         {((authorized && userInfo?.acl && userInfo?.acl.includes("queue"))&&userInfo.role==="admin" )&& (
-          <Box
-               onClick={() => handleNavigate("queue")}
-            id={"queue"}
-            sx={{
-              ...center,
-              flexDirection: "column",
-              p: 3,
-              px: 4,
-              bgcolor: (theme) => theme.palette.background.paper,
-              borderRadius: "12px",
-              boxShadow: "0px 4px 40px 0px rgba(0, 0, 0, 0.08)",
-              cursor: "pointer",
-              "&:hover": {
-                bgcolor: (theme) => theme.palette.primary.main,
-                "& #child": {
-                  fill: (theme) => theme.palette.text.secondary,
-                  color: (theme) => theme.palette.text.secondary,
-                },
-              },
-            }}
-          >
-            <MenuIcon
-              sx={{
-                fontSize: "65px",
-                fill: (theme) => theme.palette.primary.light,
-              }}
-              id="child"
-            />
-            <Typography
-              sx={{
-                fontSize: "18px",
-                fontWeight: 500,
-                color: (theme) => theme.palette.primary.light,
-              }}
-              id="child"
-            >
-              صف نوبت
-            </Typography>
-          </Box>
+          <SelectFloor/>
+          // <Box
+          //      onClick={() => handleNavigate("queue")}
+          //   id={"queue"}
+          //   sx={{
+          //     ...center,
+          //     flexDirection: "column",
+          //     p: 3,
+          //     px: 4,
+          //     bgcolor: (theme) => theme.palette.background.paper,
+          //     borderRadius: "12px",
+          //     boxShadow: "0px 4px 40px 0px rgba(0, 0, 0, 0.08)",
+          //     cursor: "pointer",
+          //     "&:hover": {
+          //       bgcolor: (theme) => theme.palette.primary.main,
+          //       "& #child": {
+          //         fill: (theme) => theme.palette.text.secondary,
+          //         color: (theme) => theme.palette.text.secondary,
+          //       },
+          //     },
+          //   }}
+          // >
+          //   <MenuIcon
+          //     sx={{
+          //       fontSize: "65px",
+          //       fill: (theme) => theme.palette.primary.light,
+          //     }}
+          //     id="child"
+          //   />
+          //   <Typography
+          //     sx={{
+          //       fontSize: "18px",
+          //       fontWeight: 500,
+          //       color: (theme) => theme.palette.primary.light,
+          //     }}
+          //     id="child"
+          //   >
+          //     صف نوبت
+          //   </Typography>
+          // </Box>
         )}
         {((authorized && userInfo?.acl && userInfo?.acl.includes("setting"))&&userInfo.role==="admin") && (
           <Box

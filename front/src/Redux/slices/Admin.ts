@@ -13,6 +13,7 @@ interface States {
   room: any;
   queueDt: any;
   activeQueueCard: any;
+  floor: any;
 }
 const initialState = {
   loading: false,
@@ -42,6 +43,10 @@ const initialState = {
     loading: true,
     data: [],
     AllAudios: [],
+  },
+  floor: {
+    name: "",
+    list: [],
   },
   activeQueueCard: null,
 } as States;
@@ -130,7 +135,8 @@ export const EditExpTitle = createAsyncThunk(
   }
 );
 
-//! Room
+//! TODO=> Room add floor_id
+
 export const createNewRoom = createAsyncThunk(
   "admin/ new room",
   async (_, { getState }) => {
@@ -209,34 +215,33 @@ export const getDocVoice = createAsyncThunk(
           res?.data["expertise"]?.url
             ? audios.push(res?.data["expertise"]?.url)
             : null;
-          //UNCOMMENT THESE LATER
+
           let prevData = JSON.parse(localStorage.getItem("audios")!) ?? [];
           let datatoadd = { id: data?.id, audios };
           prevData?.push(datatoadd);
           localStorage.setItem("audios", JSON.stringify(prevData));
-
-          // const playAudio = async () => {
-          //   for (let i = 0; i < audios.length; i++) {
-          //     let audio = new Audio(audios[i]);
-          //     if (audio === undefined) {
-          //       console.log("tes", audio);
-          //     }
-          //     await audio.play();
-          //     await new Promise((resolve) =>
-          //       audio.addEventListener("ended", resolve)
-          //     );
-          //   }
-          // };
-
-          // Start playing audios
-          // await playAudio();
           dispatch(setActiveQueueCard(null));
-          // dispatch(setAllAudios(audios));
         }
       );
     }
   }
 );
+
+//! floor
+export const createNewFloor = createAsyncThunk(
+  "admin/new floor",
+  async (_, { getState }) => {
+    const state = getState() as { admin: States };
+
+    const { name } = state.admin.floor;
+    return await Axios.post("api/v1/room/floor", {
+      name,
+    });
+  }
+);
+export const getFloorList = createAsyncThunk("admin/floor list", async () => {
+  return await Axios.get("api/v1/room/floor");
+});
 
 export const admin = createSlice({
   name: "admin",
@@ -285,6 +290,10 @@ export const admin = createSlice({
       for (let item in payload.info) {
         state.room[item] = payload.info[item];
       }
+    },
+
+    setFloorInfo: (state, { payload }) => {
+      state.floor[payload.key] = payload.value;
     },
   },
   extraReducers: (builder) => {
@@ -450,6 +459,30 @@ export const admin = createSlice({
     builder.addCase(getAdminsListWithDoctor.rejected, (state, {}) => {
       state.queueDt.loading = false;
     });
+
+    // ? floor
+    builder.addCase(createNewFloor.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(createNewFloor.fulfilled, (state) => {
+      state.loading = false;
+      state.refresh = true;
+    });
+    builder.addCase(createNewFloor.rejected, (state) => {
+      state.loading = false;
+    });
+
+    builder.addCase(getFloorList.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(getFloorList.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.refresh = false;
+      state.floor.list = (payload as any)?.data;
+    });
+    builder.addCase(getFloorList.rejected, (state) => {
+      state.loading = false;
+    });
   },
 });
 
@@ -464,5 +497,6 @@ export const {
   setRoomInfo,
   setActiveQueueCard,
   setAllAudios,
+  setFloorInfo,
 } = admin.actions;
 export default admin.reducer;

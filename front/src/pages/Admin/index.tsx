@@ -24,6 +24,7 @@ import Room from "../../components/Admin/EditDetails/Room";
 import EditClinic from "../../components/Admin/EditClinic";
 import { Voice } from "../../components/Admin/EditDetails/Voice";
 import { getClinicName } from "../../Redux/slices/General";
+import { Floor } from "../../components/Admin/EditDetails/Floor/Floor";
 
 const Admin: React.FC = () => {
   const dispatch = useDispatch();
@@ -245,7 +246,7 @@ const Admin: React.FC = () => {
                 width: "5rem",
               }}
             >
-              بخش
+              طبقه
             </Button>
             <Button
               onClick={() => dispatch<any>(changeSection(2))}
@@ -262,9 +263,8 @@ const Admin: React.FC = () => {
                 width: "5rem",
               }}
             >
-              عنوان
+              بخش
             </Button>
-
             <Button
               onClick={() => dispatch<any>(changeSection(3))}
               variant="contained"
@@ -277,10 +277,10 @@ const Admin: React.FC = () => {
                   detailSection === 3
                     ? theme.palette.primary.dark
                     : theme.palette.text.secondary,
-                width: "7rem",
+                width: "5rem",
               }}
             >
-              نوع تخصص
+              عنوان
             </Button>
 
             <Button
@@ -293,6 +293,24 @@ const Admin: React.FC = () => {
                     : theme.palette.primary.dark,
                 color: (theme) =>
                   detailSection === 4
+                    ? theme.palette.primary.dark
+                    : theme.palette.text.secondary,
+                width: "7rem",
+              }}
+            >
+              نوع تخصص
+            </Button>
+
+            <Button
+              onClick={() => dispatch<any>(changeSection(5))}
+              variant="contained"
+              sx={{
+                bgcolor: (theme) =>
+                  detailSection === 5
+                    ? theme.palette.text.secondary
+                    : theme.palette.primary.dark,
+                color: (theme) =>
+                  detailSection === 5
                     ? theme.palette.primary.dark
                     : theme.palette.text.secondary,
                 // width: "7rem",
@@ -311,10 +329,12 @@ const Admin: React.FC = () => {
             }}
           >
             {detailSection === 1 ? (
-              <Room />
+              <Floor />
             ) : detailSection === 2 ? (
-              <Title />
+              <Room />
             ) : detailSection === 3 ? (
+              <Title />
+            ) : detailSection === 4 ? (
               <ExpertTitle />
             ) : (
               <Voice />

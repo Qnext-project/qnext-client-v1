@@ -160,6 +160,56 @@ const Room: React.FC = () => {
               </option>
             ))}
           </TextField>
+                <TextField
+            select
+            type="text"
+            id="input-with-icon-textfield"
+            InputProps={{
+              style: {
+                // background: "#F2F2F2",
+                color: "#000",
+                direction: "ltr",
+                height: "40px",
+              },
+            }}
+            variant="outlined"
+            SelectProps={{
+              native: true,
+            }}
+            onChange={(e) =>
+              dispatch(
+                addRoomInfo({
+                  key: "media_id",
+                  value: e.target.value,
+                })
+              )
+            }
+          >
+            <option value="">
+              <Typography
+                sx={{
+                  fontSize: "12px",
+
+                  fontWeight: 400,
+                }}
+              >
+                طبقه مورد نظر را انتخاب کنید
+              </Typography>
+            </option>
+            {voiceList.map((item: any, index: any) => (
+              <option key={index} value={item?.id}>
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+
+                    fontWeight: 400,
+                  }}
+                >
+                  {item?.name}
+                </Typography>
+              </option>
+            ))}
+          </TextField>
         <Box>
           <TextField
             onChange={(e) => {

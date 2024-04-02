@@ -1,4 +1,4 @@
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, TextField, Typography } from "@mui/material";
 import logo from "../../assets/images/logoWhite.png";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
@@ -16,9 +16,12 @@ const center = {
 function Footer() {
   const navigate: (to: string) => void = useNavigate();
   const dispatch = useDispatch();
-  const { fullScreen }: { fullScreen: boolean } = useSelector(
+  const { fullScreen,voiceList }: { fullScreen: boolean,voiceList: any  } = useSelector(
     (state: any) => state.general
   );
+
+
+
 
   interface clinicItem {
     name: string;
@@ -83,6 +86,52 @@ function Footer() {
             cursor: "pointer",
           }}
         />
+        <TextField
+            select
+            InputProps={{
+              style: {
+                background: "#F2F2F2",
+                color: "#000",
+                direction: "ltr",
+                height: "40px",
+              },
+            }}
+            variant="outlined"
+            SelectProps={{
+              native: true,
+            }}
+            // onChange={(e) =>
+            //   dispatch(
+            //     addRoomInfo({
+            //       key: "media_id",
+            //       value: e.target.value,
+            //     })
+            //   )
+            // }
+          >
+            <option value="">
+              <Typography
+                sx={{
+                  fontSize: "12px",
+                  fontWeight: 400,
+                }}
+              >
+                طبقه مورد نظر را انتخاب کنید
+              </Typography>
+            </option>
+            {[1,2,3,4,5].map((item: any, index: any) => (
+              <option key={index} value={item?.id}>
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 400,
+                  }}
+                >
+                  {item?.name}
+                </Typography>
+              </option>
+            ))}
+          </TextField>
 
         <Divider orientation="vertical" variant="middle" flexItem />
         <img src={logo} width={120} height={50} />
