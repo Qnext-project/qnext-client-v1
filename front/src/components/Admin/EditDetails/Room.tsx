@@ -11,30 +11,20 @@ import AddIcon from "@mui/icons-material/Add";
 import RoomTable from "./RoomTable";
 import { useDispatch, useSelector } from "react-redux";
 import { addRoomInfo, createNewRoom } from "../../../Redux/slices/Admin";
-import { VoiceList } from "../../../Redux/slices/General";
-// const VisuallyHiddenInput = styled("input")({
-//   clip: "rect(0 0 0 0)",
-//   clipPath: "inset(50%)",
-//   height: 1,
-//   overflow: "hidden",
-//   position: "absolute",
-//   bottom: 0,
-//   left: 0,
-//   whiteSpace: "nowrap",
-//   width: 1,
-// });
+import { VoiceList, setFloorId } from "../../../Redux/slices/General";
+
 
 const Room: React.FC = () => {
   const dispatch = useDispatch();
-  const { loading }: { loading: boolean } = useSelector(
+  const { loading ,floor}: { loading: boolean,floor:{list:any} } = useSelector(
     (state: any) => state.admin
   );
 
-    const { voiceList }: { voiceList: any } =
+    const { voiceList,floor_id }: { voiceList: any,floor_id:string } =
     useSelector((state: any) => state.general);
 
   useEffect(() => {
-    dispatch<any>(VoiceList("expertise"));
+    dispatch<any>(VoiceList("room"));
   }, []);
   return (
     <Box sx={{}}>
@@ -178,10 +168,7 @@ const Room: React.FC = () => {
             }}
             onChange={(e) =>
               dispatch(
-                addRoomInfo({
-                  key: "media_id",
-                  value: e.target.value,
-                })
+                setFloorId(e.target.value)
               )
             }
           >
@@ -196,7 +183,7 @@ const Room: React.FC = () => {
                 طبقه مورد نظر را انتخاب کنید
               </Typography>
             </option>
-            {voiceList.map((item: any, index: any) => (
+            {floor?.list?.map((item: any, index: any) => (
               <option key={index} value={item?.id}>
                 <Typography
                   sx={{
@@ -233,7 +220,8 @@ const Room: React.FC = () => {
         </Box>
         <Box>
           <Button
-            onClick={() => dispatch<any>(createNewRoom())}
+            onClick={() =>{console.log(floor_id);
+             dispatch<any>(createNewRoom(floor_id))}}
             sx={{ bgcolor: (theme) => theme.palette.success.main }}
             component="label"
             variant="contained"

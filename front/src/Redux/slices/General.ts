@@ -9,6 +9,7 @@ interface States {
   fullScreen: boolean;
   voiceFile: any;
   voiceType: string;
+  floor_id: string;
 }
 const initialState = {
   loading: false,
@@ -18,6 +19,7 @@ const initialState = {
   fullScreen: false,
   voiceFile: null,
   voiceType: "doctor",
+  floor_id: "",
 } as States;
 
 //? voice
@@ -64,6 +66,9 @@ export const general = createSlice({
       state.voiceType = payload;
       state.refresh = true;
     },
+    setFloorId: (state, { payload }) => {
+      state.floor_id = payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -108,6 +113,6 @@ export const general = createSlice({
   },
 });
 
-export const { getClinicName, changeFullScreen, setVoiceType } =
+export const { getClinicName, changeFullScreen, setVoiceType, setFloorId } =
   general.actions;
 export default general.reducer;

@@ -14,6 +14,7 @@ export const Queue = () => {
     setUsername(userInfo?.username);
   }, []);
   const { queueDt, activeQueueCard } = useSelector(state => state.admin)
+  const { floor_id } = useSelector(state => state.general)
 
 
 
@@ -33,18 +34,21 @@ export const Queue = () => {
 
 
   useEffect(() => {
-    dispatch(getAdminsListWithDoctor())
-  }, [])
+    console.log(floor_id);
+    dispatch(getAdminsListWithDoctor(floor_id))
+  }, [floor_id])
 
   useEffect(() => {
+    console.log(floor_id);
+
     const interval = setInterval(() => {
-      dispatch(getAdminsListWithDoctor());
+      dispatch(getAdminsListWithDoctor(floor_id));
     }, 3000);
 
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [floor_id]);
 
 
 

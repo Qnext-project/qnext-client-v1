@@ -140,7 +140,7 @@ export const EditExpTitle = createAsyncThunk(
 
 export const createNewRoom = createAsyncThunk(
   "admin/ new room",
-  async (_, { getState }) => {
+  async (floor_id:string, { getState }) => {
     const state = getState() as { admin: States };
 
     const { name, number, media_id } = state.admin.room;
@@ -148,6 +148,7 @@ export const createNewRoom = createAsyncThunk(
       name,
       number,
       media_id,
+      floor_id
     });
   }
 );
@@ -177,9 +178,9 @@ export const editRoom = createAsyncThunk(
 
 export const getAdminsListWithDoctor = createAsyncThunk(
   "admin/getAdminList",
-  async (_, { getState, dispatch }) => {
+  async (floor_id:string, { getState, dispatch }) => {
     const getstate = getState() as { admin: States };
-    return await Axios.get("api/v1/admin/list").then((res) => {
+    return await Axios.get(`api/v1/admin/list/queue/${floor_id}`).then((res) => {
       const differentData = getstate.admin?.queueDt?.data?.filter(
         (dt: any) =>
           !res?.data?.some(

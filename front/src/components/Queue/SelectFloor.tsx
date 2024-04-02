@@ -7,6 +7,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { TextField } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { reactRouts } from "../../utils/reactRouts";
+import { useDispatch, useSelector } from "react-redux";
+import { setFloorId } from "../../Redux/slices/General";
+import  {Close}  from "@mui/icons-material";
 
 const style = {
   position: "absolute" as "absolute",
@@ -23,14 +26,22 @@ const style = {
 export default function SelectFloor() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-    
+  const handleClose = () => setOpen(false);
+
+  const dispatch = useDispatch();
+
   const navigate: (to: string) => void = useNavigate();
   const center = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
   };
+  const { floor }: { floor: { list: any } } = useSelector(
+    (state: any) => state.admin
+  );
+  const { floor_id}: { floor_id:string } = useSelector(
+    (state: any) => state.general
+  );
   return (
     <div>
       <Box
@@ -61,7 +72,8 @@ export default function SelectFloor() {
           }}
           id="child"
         />
-        <Typography
+     
+    <Typography
           sx={{
             fontSize: "18px",
             fontWeight: 500,
@@ -70,7 +82,10 @@ export default function SelectFloor() {
           id="child"
         >
           صف نوبت
-        </Typography>
+          </Typography>
+  
+    
+    
       </Box>
       <Modal
         open={open}
@@ -79,14 +94,19 @@ export default function SelectFloor() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
+          <Box sx={{...center,justifyContent:"space-between"}}>
+
+
           <Typography id="modal-modal-title" variant="h6" component="h2">
             انتخاب طبقه
-          </Typography>
+            </Typography>
+            <Close onClick={()=>handleClose()} sx={{cursor:"pointer"}}/>
+          </Box>
           <Typography id="modal-modal-description" sx={{ my: 2 }}>
             طبقه مورد نظر برای نمایش صف نوبت را انتخاب کنید
           </Typography>
 
-          <Box sx={{...center,justifyContent:"space-between"}}>
+          <Box sx={{ ...center, justifyContent: "space-between" }}>
             <TextField
               select
               type="text"
@@ -103,14 +123,7 @@ export default function SelectFloor() {
               SelectProps={{
                 native: true,
               }}
-              // onChange={(e) =>
-              //   dispatch(
-              //     addRoomInfo({
-              //       key: "media_id",
-              //       value: e.target.value,
-              //     })
-              //   )
-              // }
+              onChange={(e) => dispatch<any>(setFloorId(e.target.value))}
             >
               <option value="">
                 <Typography
@@ -123,7 +136,7 @@ export default function SelectFloor() {
                   طبقه مورد نظر را انتخاب کنید
                 </Typography>
               </option>
-              {[1, 2, 3, 4, 3, 4, 6].map((item: any, index: any) => (
+              {floor?.list?.map((item: any, index: any) => (
                 <option key={index} value={item?.id}>
                   <Typography
                     sx={{
@@ -137,7 +150,13 @@ export default function SelectFloor() {
                 </option>
               ))}
             </TextField>
-            <Button onClick={()=>navigate(reactRouts.queue.main)} variant="contained">ورود به صف نوبت</Button>
+            <Button
+              disabled={floor_id?.length<=0?true:false}
+              onClick={() => navigate(reactRouts.queue.main)}
+              variant="contained"
+            >
+              ورود به صف نوبت
+            </Button>
           </Box>
         </Box>
       </Modal>

@@ -6,7 +6,7 @@ import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { reactRouts } from "../../utils/reactRouts";
-import { changeFullScreen } from "../../Redux/slices/General";
+import { changeFullScreen, setFloorId } from "../../Redux/slices/General";
 import { useEffect, useState } from "react";
 const center = {
   display: "flex",
@@ -18,6 +18,9 @@ function Footer() {
   const dispatch = useDispatch();
   const { fullScreen,voiceList }: { fullScreen: boolean,voiceList: any  } = useSelector(
     (state: any) => state.general
+  );
+  const { floor }: { floor: any  } = useSelector(
+    (state: any) => state.admin
   );
 
 
@@ -100,14 +103,8 @@ function Footer() {
             SelectProps={{
               native: true,
             }}
-            // onChange={(e) =>
-            //   dispatch(
-            //     addRoomInfo({
-            //       key: "media_id",
-            //       value: e.target.value,
-            //     })
-            //   )
-            // }
+                     onChange={(e) => dispatch<any>(setFloorId(e.target.value))}
+
           >
             <option value="">
               <Typography
@@ -119,7 +116,7 @@ function Footer() {
                 طبقه مورد نظر را انتخاب کنید
               </Typography>
             </option>
-            {[1,2,3,4,5].map((item: any, index: any) => (
+            {floor?.list?.map((item: any, index: any) => (
               <option key={index} value={item?.id}>
                 <Typography
                   sx={{
