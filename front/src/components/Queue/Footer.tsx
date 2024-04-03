@@ -16,7 +16,7 @@ const center = {
 function Footer() {
   const navigate: (to: string) => void = useNavigate();
   const dispatch = useDispatch();
-  const { fullScreen,voiceList }: { fullScreen: boolean,voiceList: any  } = useSelector(
+  const { fullScreen }: { fullScreen: boolean } = useSelector(
     (state: any) => state.general
   );
   const { floor }: { floor: any  } = useSelector(

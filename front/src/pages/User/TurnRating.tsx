@@ -7,7 +7,6 @@ import { digitsEnToFa } from "@persian-tools/persian-tools";
 import { useDispatch, useSelector } from "react-redux";
 import { exitTurnRating, freeRoom, turnHandler } from "../../Redux/slices/User";
 import { ResetModal } from "../../components/User/ResetModal";
-import React from "react";
 import { TurnNumber } from "../../components/User/TurnNumber";
 function TurnRating() {
   const center = {
