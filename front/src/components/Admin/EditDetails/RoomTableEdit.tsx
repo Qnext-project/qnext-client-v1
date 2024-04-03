@@ -12,6 +12,7 @@ import {
   editRoom,
   setRoomInfo,
 } from "../../../Redux/slices/Admin";
+import { setFloorId } from "../../../Redux/slices/General";
 const style = {
   position: "absolute" as "absolute",
   top: "50%",
@@ -45,6 +46,8 @@ export const RoomExpEdit: React.FC<editRoom> = ({
 }) => {
   const { voiceList, loading }: { voiceList: any; loading: boolean } =
     useSelector((state: any) => state.general);
+  const { floor }: { floor: {list:any}} =
+    useSelector((state: any) => state.admin);
 
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
@@ -193,6 +196,53 @@ export const RoomExpEdit: React.FC<editRoom> = ({
                 </option>
               ))}
             </TextField>
+                          <TextField
+            select
+            type="text"
+            id="input-with-icon-textfield"
+            InputProps={{
+              style: {
+                // background: "#F2F2F2",
+                color: "#000",
+                direction: "ltr",
+                height: "40px",
+              },
+            }}
+            variant="outlined"
+            SelectProps={{
+              native: true,
+            }}
+            onChange={(e) =>
+              dispatch(
+                setFloorId(e.target.value)
+              )
+            }
+          >
+            <option value="">
+              <Typography
+                sx={{
+                  fontSize: "12px",
+
+                  fontWeight: 400,
+                }}
+              >
+                طبقه مورد نظر را انتخاب کنید
+              </Typography>
+            </option>
+            {floor?.list?.map((item: any, index: any) => (
+              <option key={index} value={item?.id}>
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+
+                    fontWeight: 400,
+                  }}
+                >
+                  {item?.name}
+                </Typography>
+              </option>
+            ))}
+          </TextField>
             <TextField
               placeholder="شماره"
               type={"number"}

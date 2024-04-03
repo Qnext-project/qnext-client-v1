@@ -10,6 +10,7 @@ import { reactRouts } from "../../utils/reactRouts";
 import { useDispatch, useSelector } from "react-redux";
 import { setFloorId } from "../../Redux/slices/General";
 import  {Close}  from "@mui/icons-material";
+import { getFloorList } from "../../Redux/slices/Admin";
 
 const style = {
   position: "absolute" as "absolute",
@@ -42,6 +43,10 @@ export default function SelectFloor() {
   const { floor_id}: { floor_id:string } = useSelector(
     (state: any) => state.general
   );
+
+  React.useEffect(() => {
+    dispatch<any>(getFloorList())
+  },[])
   return (
     <div>
       <Box

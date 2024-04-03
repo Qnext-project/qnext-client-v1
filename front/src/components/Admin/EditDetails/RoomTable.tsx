@@ -26,7 +26,7 @@ export default function RoomTable() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 600 }} align="center">
-                نام اتاق
+                نام اتاق ـ طبقه
               </TableCell>
               <TableCell sx={{ fontWeight: 600 }} align="center">
                 شماره
