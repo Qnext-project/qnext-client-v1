@@ -164,7 +164,7 @@ export const deleteRoom = createAsyncThunk(
 );
 export const editRoom = createAsyncThunk(
   "admin/room edit",
-  async (room_id: string, { getState }) => {
+  async ({room_id,floor_id}:{room_id: string,floor_id:string}, { getState }) => {
     const state = getState() as { admin: States };
     const { name, number, media_id } = state.admin.room;
 
@@ -172,6 +172,7 @@ export const editRoom = createAsyncThunk(
       name,
       number,
       media_id,
+      floor_id
     });
   }
 );

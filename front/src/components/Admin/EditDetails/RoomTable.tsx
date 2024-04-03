@@ -43,7 +43,7 @@ export default function RoomTable() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell align="center">
-                  {row?.name === "room" ? "اتاق" : "پذیرش"}
+                  {row?.name === "room" ? "اتاق" : "پذیرش"}-{row?.floor_name}
                 </TableCell>
                 <TableCell align="center">{row?.number}</TableCell>
 
@@ -67,6 +67,7 @@ export default function RoomTable() {
                   />
                   <RoomExpEdit
                     name={row?.name}
+                    floor_name={row?.floor_name}
                     number={`${row?.number}`}
                     room_id={row?.id}
                     media_id={row?.media_id}

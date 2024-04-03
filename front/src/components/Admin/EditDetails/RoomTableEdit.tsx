@@ -36,6 +36,7 @@ interface editRoom {
   room_id: string;
   number: string;
   media_id: string;
+  floor_name:string
 }
 
 export const RoomExpEdit: React.FC<editRoom> = ({
@@ -43,8 +44,9 @@ export const RoomExpEdit: React.FC<editRoom> = ({
   number,
   room_id,
   media_id,
+  floor_name
 }) => {
-  const { voiceList, loading }: { voiceList: any; loading: boolean } =
+  const { voiceList, loading,floor_id }: { voiceList: any; loading: boolean,floor_id:string } =
     useSelector((state: any) => state.general);
   const { floor }: { floor: {list:any}} =
     useSelector((state: any) => state.admin);
@@ -66,7 +68,7 @@ export const RoomExpEdit: React.FC<editRoom> = ({
   const handleClose = () => setOpen(false);
 
   const submithandler = () => {
-    dispatch<any>(editRoom(room_id));
+    dispatch<any>(editRoom({room_id,floor_id}));
     if (!loading) {
       setOpen(false);
     }
@@ -317,7 +319,7 @@ export const RoomExpEdit: React.FC<editRoom> = ({
                 عنوان:
               </Typography>
               <Typography sx={{ fontSize: "18px", fontWeight: 500 }}>
-                {name === "room" ? "اتاق" : "پذیرش"}
+                {name === "room" ? "اتاق" : "پذیرش"}-{floor_name}
               </Typography>
             </Box>
             <Box sx={{ ...center, gap: "15px" }}>
