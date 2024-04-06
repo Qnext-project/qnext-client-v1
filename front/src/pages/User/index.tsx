@@ -1,4 +1,5 @@
 import {
+  Autocomplete,
   Box,
   Button,
   Checkbox,
@@ -40,7 +41,11 @@ const User: React.FC = () => {
     (state: any) => state.setting
   );
 
-  const { loading, allow,userData }: { loading: boolean; allow: boolean,userData:any } = useSelector(
+  const {
+    loading,
+    allow,
+    userData,
+  }: { loading: boolean; allow: boolean; userData: any } = useSelector(
     (state: any) => state.user
   );
 
@@ -105,51 +110,45 @@ const User: React.FC = () => {
             واحد
           </Typography>
 
-          <TextField
-            fullWidth
-            onChange={(e) =>
+          <Autocomplete
+            disablePortal
+            autoHighlight
+            getOptionLabel={(option: any) =>
+              `${option.name === "room" ? "اتاق" : "پذیرش"}${option?.number}`
+            }
+            options={room?.list}
+            onChange={(_, value) => {
               dispatch<any>(
                 setUserData({
                   key: "room_id",
-                  value: e.target.value,
+                  value: value?.id,
                 })
-              )
-            }
-            select
-            type="text"
-            id="input-with-icon-textfield"
-            InputProps={{
-              style: {
-                color: "#000",
-                direction: "ltr",
-                height: "60px",
-              },
+              );
             }}
-            variant="outlined"
-            SelectProps={{
-              native: true,
-            }}
-          >
-            <option value="">
-              <Typography
-                sx={{
-                  fontSize: "12px",
-
-                  fontWeight: 400,
-                }}
+            renderOption={(props, option) => (
+              <Box
+                component="li"
+                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                {...props}
               >
-                اتاق
-              </Typography>
-            </option>
-            {room?.list.map((row: any) => (
-              <option key={row.id} value={row?.id}>
                 <Typography>
-                  {row.name === "room" ? "اتاق" : "پذیرش"}
+                  {option.name === "room" ? "اتاق" : "پذیرش"}
                 </Typography>
-                <Typography>{row?.number}</Typography>
-              </option>
-            ))}
-          </TextField>
+                <Typography>{option?.number}</Typography>
+              </Box>
+            )}
+            sx={{ width: "100%" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="انتخاب اتاق"
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "new-password", // disable autocomplete and autofill
+                }}
+              />
+            )}
+          />
         </Box>
         <Box
           sx={{ ...center, flexDirection: "column", width: "30%", gap: "5px" }}
@@ -165,54 +164,49 @@ const User: React.FC = () => {
             کاربر
           </Typography>
 
-          <TextField
-            fullWidth
-            onChange={(e) =>
+          <Autocomplete
+            disablePortal
+            autoHighlight
+            getOptionLabel={(option: any) =>
+              `${option?.first_name} ${option?.last_name}-${option?.title_name}-${option?.expertise_name}`
+            }
+            options={newDoctor?.list}
+            onChange={(_, value) => {
               dispatch<any>(
                 setUserData({
                   key: "user_id",
-                  value: e.target.value,
+                  value: value?.id,
                 })
-              )
-            }
-            select
-            type="text"
-            id="input-with-icon-textfield"
-            InputProps={{
-              style: {
-                color: "#000",
-                direction: "ltr",
-                height: "60px",
-              },
+              );
             }}
-            variant="outlined"
-            SelectProps={{
-              native: true,
-            }}
-          >
-            <option value="">
-              <Typography
-                sx={{
-                  fontSize: "12px",
-
-                  fontWeight: 400,
-                }}
+            renderOption={(props, option) => (
+              <Box
+                component="li"
+                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                {...props}
               >
-                نام پزشک
-              </Typography>
-            </option>
-            {newDoctor?.list.map((row: any) => (
-              <option key={row.id} value={row?.id}>
                 <Typography
                   sx={{
                     fontSize: "14px",
                     fontWeight: 500,
                     color: (theme) => theme.palette.primary.main,
                   }}
-                >{`${row?.first_name} ${row?.last_name}-${row?.title_name}-${row?.expertise_name}`}</Typography>
-              </option>
-            ))}
-          </TextField>
+                >{`${option?.first_name} ${option?.last_name}-${option?.title_name}-${option?.expertise_name}`}</Typography>
+              </Box>
+            )}
+            sx={{ width: "100%" }}
+            renderInput={(params) => (
+              <TextField
+                autoComplete="none"
+                {...params}
+                placeholder=" نام پزشک"
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "none", // disable autocomplete and autofill
+                }}
+              />
+            )}
+          />
         </Box>
         <Box
           sx={{
@@ -224,7 +218,11 @@ const User: React.FC = () => {
           <FormControlLabel control={<Checkbox />} label="پیش فرض" />
 
           <Button
-            disabled={(userData.user_id.length<=0||userData.room_id.length<=0)?true:false}
+            disabled={
+              userData.user_id.length <= 0 || userData.room_id.length <= 0
+                ? true
+                : false
+            }
             onClick={() => Enterhandler()}
             fullWidth
             variant="contained"
