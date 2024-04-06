@@ -64,12 +64,50 @@ export const Queue = () => {
     }
   };
 
+  // const playNextAudio = async (audios) => {
+  //   if (audios.length > 0 && activeQueueCard === null) {
+  //     let toPlay = audios[0];
+  //     dispatch(setActiveQueueCard(toPlay?.id));
+
+  //     await playAudio(toPlay?.audios);
+
+  //     dispatch(setActiveQueueCard(null));
+
+  //     audios.splice(0, 1);
+
+  //     if (audios.length > 0) {
+  //       localStorage.setItem("audios", JSON.stringify(audios));
+  //       playNextAudio(audios);
+  //     } else {
+  //       localStorage.removeItem("audios");
+  //     }
+  //   }
+  // };
+
   const playNextAudio = async (audios) => {
     if (audios.length > 0 && activeQueueCard === null) {
       let toPlay = audios[0];
       dispatch(setActiveQueueCard(toPlay?.id));
 
-      await playAudio(toPlay?.audios);
+      const audio = new Audio(toPlay?.audios);
+      if (!audio) {
+        console.log("Error creating audio instance");
+        return;
+      }
+
+      // Create a promise that resolves when the audio finishes playing
+      const audioPromise = new Promise((resolve) => {
+        audio.addEventListener("ended", resolve);
+      });
+
+      // Play the audio
+      audio.play();
+
+      // Wait for the audio to finish playing
+      await audioPromise;
+
+      // Remove the event listener
+      audio.removeEventListener("ended", () => { });
 
       dispatch(setActiveQueueCard(null));
 
@@ -83,6 +121,7 @@ export const Queue = () => {
       }
     }
   };
+
 
   useEffect(() => {
     let audios = JSON.parse(localStorage.getItem("audios"));
