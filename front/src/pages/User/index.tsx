@@ -114,7 +114,9 @@ const User: React.FC = () => {
             disablePortal
             autoHighlight
             getOptionLabel={(option: any) =>
-              `${option.name === "room" ? "اتاق" : "پذیرش"}${option?.number}`
+              `${option.name === "room" ? "اتاق" : "پذیرش"}${option?.number}-${
+                option?.floor_name
+              }`
             }
             options={room?.list}
             onChange={(_, value) => {
@@ -135,6 +137,7 @@ const User: React.FC = () => {
                   {option.name === "room" ? "اتاق" : "پذیرش"}
                 </Typography>
                 <Typography>{option?.number}</Typography>
+                <Typography>-{option?.floor_name}</Typography>
               </Box>
             )}
             sx={{ width: "100%" }}
