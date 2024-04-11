@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { exitTurnRating, freeRoom, turnHandler } from "../../Redux/slices/User";
 import { ResetModal } from "../../components/User/ResetModal";
 import { TurnNumber } from "../../components/User/TurnNumber";
+import { useEffect } from "react";
 function TurnRating() {
   const center = {
     display: "flex",
@@ -48,6 +49,15 @@ function TurnRating() {
       dispatch<any>(turnHandler(0));
     }
   };
+
+  useEffect(() => {
+    if (userInfo?.room_id == null) {
+      dispatch<any>(freeRoom());
+      dispatch<any>(exitTurnRating());
+
+      navigate(reactRouts.user.main);
+    }
+  }, [userInfo]);
 
   return (
     <Box sx={{ height: "100svh" }}>
@@ -119,9 +129,7 @@ function TurnRating() {
               number={userInfo?.current_turn_number}
               changeTurn={changeTurn}
             />
-            <TurnNumber
-              
-            />
+            <TurnNumber />
           </Box>
 
           <Box
@@ -173,7 +181,7 @@ function TurnRating() {
               height: "30%",
               bgcolor: (theme) => theme.palette.background.paper,
               boxShadow: "0px 4px 40px 20px rgba(0, 0, 0, 0.08)",
-mt:4
+              mt: 4,
             }}
           >
             <Typography
@@ -203,30 +211,7 @@ mt:4
               cursor: "pointer",
               flexDirection: "column",
             }}
-          >
-            {/* <Typography
-              sx={{
-                color: (theme) => theme.palette.primary.light,
-                width: "100%",
-                textAlign: "center",
-                fontWeight: 600,
-                p: 2,
-              }}
-            >
-              مدت زمان ویزیت
-            </Typography> */}
-            {/* <Typography
-              sx={{
-                color: (theme) => theme.palette.primary.light,
-                width: "100%",
-                textAlign: "center",
-                fontWeight: 600,
-                p: 2,
-              }}
-            >
-              55555
-            </Typography> */}
-          </Box>
+          ></Box>
         </Box>
       </Box>
     </Box>

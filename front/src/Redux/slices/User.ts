@@ -76,7 +76,7 @@ export const user = createSlice({
       state.loading = false;
       // state.allow = true;
       state.userInfo = (payload as any)?.data;
-      console.log(payload);
+   
     });
     builder.addCase(turnHandler.rejected, (state) => {
       state.loading = false;

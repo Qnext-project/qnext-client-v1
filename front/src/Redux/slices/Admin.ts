@@ -136,7 +136,6 @@ export const EditExpTitle = createAsyncThunk(
   }
 );
 
-//! TODO=> Room add floor_id
 
 export const createNewRoom = createAsyncThunk(
   "admin/ new room",
@@ -264,6 +263,16 @@ export const editFloor = createAsyncThunk(
     });
   }
 );
+
+//!exit room
+export const purgeUser = createAsyncThunk(
+  "admin/userPurge",
+  async (user_id:string) => {
+    return await Axios.post(`api/v1/admin/doctor/purge/user`, {
+      user_id
+    })
+  }
+)
 
 export const admin = createSlice({
   name: "admin",
@@ -528,6 +537,20 @@ export const admin = createSlice({
     builder.addCase(editFloor.rejected, (state) => {
       state.loading = false;
     });
+
+    //?exit room
+
+    builder.addCase(purgeUser.pending, (state) => {
+      state.loading=true
+    })
+    builder.addCase(purgeUser.fulfilled, (state) => {
+      state.loading = false
+        toastHandler(" خروج با موفقیت انجام شد")
+    })
+    builder.addCase(purgeUser.rejected, (state) => {
+      state.loading = false
+       toastHandler("خطایی رخ داده است مجدد تلاش کنید")
+    })
   },
 });
 
