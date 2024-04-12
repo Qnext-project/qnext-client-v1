@@ -222,7 +222,7 @@ const User: React.FC = () => {
 
           <Button
             disabled={
-              userData.user_id.length <= 0 || userData.room_id.length <= 0
+              userData?.user_id?.length <= 0 || userData?.room_id?.length <= 0
                 ? true
                 : false
             }
