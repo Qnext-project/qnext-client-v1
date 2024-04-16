@@ -33,8 +33,6 @@ export const UserLable: FC<UserProps> = ({ userName, user_id }) => {
         sx={{
           ...center,
           justifyContent: "start",
-          color:"inherit",
-         
         }}
       >
         <Typography
