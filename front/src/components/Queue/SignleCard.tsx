@@ -84,7 +84,7 @@ export const SignleCard: React.FC<propType> = ({ data, activeQueueCard }) => {
             textAlign: "center",
           }}
         >
-          {data&& digitsEnToFa(parseInt(data?.current_turn_number))}
+          {data?.current_turn_number!==null? digitsEnToFa(parseInt(data?.current_turn_number)):""}
         </Typography>
       </Box>
     </Box>
