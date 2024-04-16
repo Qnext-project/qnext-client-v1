@@ -55,9 +55,9 @@ const dispatch = useDispatch();
             cursor:"pointer"
           }}
         >
-          تعریف کاربر
+          تعریف پزشک
         </Typography>
-        {/* <Typography
+        <Typography
           onClick={() => handleTabs(2)}
           sx={{
             fontSize: "20px",
@@ -74,8 +74,8 @@ const dispatch = useDispatch();
 
           }}
         >
-        واحد ها
-        </Typography> */}
+         تنظیمات کاربر
+        </Typography>
       </Box>
     
       <Box>
