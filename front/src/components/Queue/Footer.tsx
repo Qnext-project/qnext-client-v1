@@ -8,6 +8,8 @@ import { useNavigate } from "react-router-dom";
 import { reactRouts } from "../../utils/reactRouts";
 import { changeFullScreen, setFloorId } from "../../Redux/slices/General";
 import { useEffect, useState } from "react";
+
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 const center = {
   display: "flex",
   justifyContent: "center",
@@ -19,19 +21,14 @@ function Footer() {
   const { fullScreen }: { fullScreen: boolean } = useSelector(
     (state: any) => state.general
   );
-  const { floor }: { floor: any  } = useSelector(
-    (state: any) => state.admin
-  );
-
-
-
+  const { floor }: { floor: any } = useSelector((state: any) => state.admin);
 
   interface clinicItem {
     name: string;
     id: number;
   }
   const [clinicInfo, setClicnicInfo] = useState<clinicItem | null>();
-
+const [showFloorSelector,setFloorSelector]=useState(false)
   useEffect(() => {
     const getClinicInfo = localStorage.getItem("clinic");
     if (getClinicInfo !== null) {
@@ -89,46 +86,54 @@ function Footer() {
             cursor: "pointer",
           }}
         />
-        <TextField
-            select
-            InputProps={{
-              style: {
-                background: "#F2F2F2",
-                color: "#000",
-                direction: "ltr",
-                height: "40px",
-              },
-            }}
-            variant="outlined"
-            SelectProps={{
-              native: true,
-            }}
-                     onChange={(e) => dispatch<any>(setFloorId(e.target.value))}
 
-          >
-            <option value="">
+        <LocationOnOutlinedIcon
+          onClick={()=>setFloorSelector(!showFloorSelector)}
+          fontSize="large"
+          sx={{
+            fill: (theme) => theme.palette.text.secondary,
+            cursor: "pointer",
+          }}
+        />
+       {showFloorSelector&& <TextField
+          select
+          InputProps={{
+            style: {
+              background: "#F2F2F2",
+              color: "#000",
+              direction: "ltr",
+              height: "40px",
+            },
+          }}
+          variant="outlined"
+          SelectProps={{
+            native: true,
+          }}
+          onChange={(e) => dispatch<any>(setFloorId(e.target.value))}
+        >
+          <option value="">
+            <Typography
+              sx={{
+                fontSize: "12px",
+                fontWeight: 400,
+              }}
+            >
+              تغییر طبقه
+            </Typography>
+          </option>
+          {floor?.list?.map((item: any, index: any) => (
+            <option key={index} value={item?.id}>
               <Typography
                 sx={{
                   fontSize: "12px",
                   fontWeight: 400,
                 }}
               >
-                طبقه مورد نظر را انتخاب کنید
+                {item?.name}
               </Typography>
             </option>
-            {floor?.list?.map((item: any, index: any) => (
-              <option key={index} value={item?.id}>
-                <Typography
-                  sx={{
-                    fontSize: "12px",
-                    fontWeight: 400,
-                  }}
-                >
-                  {item?.name}
-                </Typography>
-              </option>
-            ))}
-          </TextField>
+          ))}
+        </TextField>}
 
         <Divider orientation="vertical" variant="middle" flexItem />
         <img src={logo} width={120} height={50} />
