@@ -5,7 +5,10 @@ import { DocumentFullScreen } from "@chiragrupani/fullscreen-react";
 import { useDispatch, useSelector } from "react-redux";
 import { changeFullScreen } from "../Redux/slices/General";
 import { SignleCard } from "../components/Queue/SignleCard";
-import { getAdminsListWithDoctor, setActiveQueueCard } from "../Redux/slices/Admin";
+import {
+  getAdminsListWithDoctor,
+  setActiveQueueCard,
+} from "../Redux/slices/Admin";
 
 export const Queue = () => {
   const [userName, setUsername] = useState("");
@@ -13,10 +16,8 @@ export const Queue = () => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     setUsername(userInfo?.username);
   }, []);
-  const { queueDt, activeQueueCard } = useSelector(state => state.admin)
-  const { floor_id } = useSelector(state => state.general)
-
-
+  const { queueDt, activeQueueCard } = useSelector((state) => state.admin);
+  const { floor_id } = useSelector((state) => state.general);
 
   const requestNotificationPermission = () => {
     if (window.Notification) {
@@ -32,11 +33,10 @@ export const Queue = () => {
 
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     console.log(floor_id);
-    dispatch(getAdminsListWithDoctor(floor_id))
-  }, [floor_id])
+    dispatch(getAdminsListWithDoctor(floor_id));
+  }, [floor_id]);
 
   useEffect(() => {
     console.log(floor_id);
@@ -49,9 +49,6 @@ export const Queue = () => {
       clearInterval(interval);
     };
   }, [floor_id]);
-
-
-
 
   const playAudio = async (audios) => {
     for (let i = 0; i < audios.length; i++) {
@@ -122,7 +119,6 @@ export const Queue = () => {
     }
   };
 
-
   useEffect(() => {
     let audios = JSON.parse(localStorage.getItem("audios"));
     if (audios?.length > 0 && activeQueueCard === null) {
@@ -138,21 +134,31 @@ export const Queue = () => {
         dispatch < any > changeFullScreen(isFullScreen);
       }}
     >
-
       <Box>
-
         <Grid container sx={{ width: "100%" }}>
-          {
-            (queueDt?.data?.length > 0 && queueDt?.data?.filter(d => d?.doc_info?.id)?.length > 0) ?
-              queueDt?.data?.map((dt, index) => (
+          {/* {queueDt?.data?.length > 0 &&
+          queueDt?.data?.filter((d) => d?.doc_info?.id)?.length > 0
+            ? queueDt?.data?.map((dt, index) => (
                 <Grid key={index} xs={6} sx={{}}>
                   <SignleCard activeQueueCard={activeQueueCard} data={dt} />
                 </Grid>
-              )) : null}
+              ))
+            : null}
+           */}
+
+          {queueDt?.data?.length > 0 &&
+            queueDt?.data?.filter((d) => d?.doc_info?.id)?.length > 0
+            ? queueDt?.data?.map((dt, index) => (
+              <Grid key={index} xs={6} sx={{}}>
+                {dt?.doc_info?.id ? (
+                  <SignleCard activeQueueCard={activeQueueCard} data={dt} />
+                ) : null}
+              </Grid>
+            ))
+            : null}
         </Grid>
       </Box>
       <Footer />
-
     </DocumentFullScreen>
   );
 };
