@@ -176,6 +176,29 @@ export const editRoom = createAsyncThunk(
   }
 );
 
+// export const getAdminsListWithDoctor = createAsyncThunk(
+//   "admin/getAdminList",
+//   async (floor_id:string, { getState, dispatch }) => {
+//     const getstate = getState() as { admin: States };
+//     return await Axios.get(`api/v1/admin/list/queue/${floor_id}`).then((res) => {
+//       const differentData = getstate.admin?.queueDt?.data?.filter(
+//         (dt: any) =>
+//           !res?.data?.some(
+//             (dt2: any) =>
+//               dt?.current_turn_number === dt2?.current_turn_number &&
+//               dt2?.current_turn_number != null
+//           )
+//       );
+//       if (differentData?.length > 0) {
+//         console.log(differentData);
+        
+//         dispatch(getDocVoice(differentData));
+//       }
+//       return res;
+//     });
+//   }
+// );
+
 export const getAdminsListWithDoctor = createAsyncThunk(
   "admin/getAdminList",
   async (floor_id:string, { getState, dispatch }) => {
@@ -188,8 +211,10 @@ export const getAdminsListWithDoctor = createAsyncThunk(
               dt?.current_turn_number === dt2?.current_turn_number &&
               dt2?.current_turn_number != null
           )
-      );
+      )?.filter((data:any) => data !== null); // remove null values
       if (differentData?.length > 0) {
+        console.log(differentData);
+        
         dispatch(getDocVoice(differentData));
       }
       return res;
@@ -203,8 +228,12 @@ export const getDocVoice = createAsyncThunk(
     for (const data of dt) {
       let audios: any[] = [];
       dispatch(setActiveQueueCard(data?.id)); // comment this later
+          console.log(dt);
+
       await Axios.post("api/v1/admin/doctor/turn/voice", data).then(
         async (res) => {
+          console.log(res.data);
+          
           res?.data["num"]?.url ? audios.push(res?.data["num"]?.url) : null;
           res?.data["numbers"]?.map((n: any) =>
             n?.url ? audios.push(n?.url) : null
