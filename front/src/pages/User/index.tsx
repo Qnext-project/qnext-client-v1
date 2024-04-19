@@ -14,7 +14,7 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { useNavigate } from "react-router-dom";
 import { reactRouts } from "../../utils/reactRouts";
 import { useDispatch, useSelector } from "react-redux";
-import { DoctorList, getRoomList } from "../../Redux/slices/Admin";
+import {  getRoomList } from "../../Redux/slices/Admin";
 import { getDoctors } from "../../Redux/slices/Setting";
 import {
   getUserData,
