@@ -8,6 +8,7 @@ interface States {
   allow: boolean;
   userData: any;
   turn: number;
+  checkBox:boolean
 }
 const initialState = {
   loading: false,
@@ -15,9 +16,10 @@ const initialState = {
   userInfo: "",
   turn: 0,
   userData: {
-    user_id: "",
-    room_id: "",
+    user_id: null,
+    room_id: null,
   },
+  checkBox:false
 } as States;
 
 export const getUserData = createAsyncThunk(
@@ -52,6 +54,9 @@ export const user = createSlice({
     exitTurnRating: (state) => {
       state.allow = false;
     },
+    setCheckBoxValue: (state) => {
+      state.checkBox=!state.checkBox
+    }
   },
   extraReducers: (builder) => {
     //!get user data
@@ -100,5 +105,5 @@ export const user = createSlice({
   },
 });
 
-export const { setUserData, exitTurnRating } = user.actions;
+export const { setUserData, exitTurnRating,setCheckBoxValue } = user.actions;
 export default user.reducer;

@@ -14,9 +14,13 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import { useNavigate } from "react-router-dom";
 import { reactRouts } from "../../utils/reactRouts";
 import { useDispatch, useSelector } from "react-redux";
-import { getRoomList } from "../../Redux/slices/Admin";
+import { DoctorList, getRoomList } from "../../Redux/slices/Admin";
 import { getDoctors } from "../../Redux/slices/Setting";
-import { getUserData, setUserData } from "../../Redux/slices/User";
+import {
+  getUserData,
+  setCheckBoxValue,
+  setUserData,
+} from "../../Redux/slices/User";
 const User: React.FC = () => {
   const center = {
     display: "flex",
@@ -45,9 +49,9 @@ const User: React.FC = () => {
     loading,
     allow,
     userData,
-  }: { loading: boolean; allow: boolean; userData: any } = useSelector(
-    (state: any) => state.user
-  );
+    checkBox,
+  }: { loading: boolean; allow: boolean; userData: any; checkBox: boolean } =
+    useSelector((state: any) => state.user);
 
   const Enterhandler: () => void = () => {
     dispatch<any>(getUserData());
@@ -57,6 +61,53 @@ const User: React.FC = () => {
       navigate(reactRouts.user.turn_rating);
     }
   }, [allow]);
+
+  const checkBoxHandler = () => {
+    let savedUser = localStorage.getItem("userData");
+    if (savedUser == null) {
+      if (userData?.user_id !== null) {
+        if (userData?.room_id !== null) {
+          localStorage.setItem("userData", JSON.stringify(userData));
+          dispatch(setCheckBoxValue());
+        }
+      }
+    } else {
+      dispatch(setCheckBoxValue());
+    }
+  };
+
+  const getExactDoctor: any = (name: string) => {
+    let savedUser: any = JSON.parse(localStorage.getItem("userData") ?? "{}");
+
+    let resualt = null;
+    if (name === "doctor") {
+      resualt = newDoctor?.list.find(
+        (item: any) => item.id == savedUser?.user_id
+      );
+      resualt = `${resualt?.first_name} ${resualt?.last_name}-${resualt?.title_name}-${resualt?.expertise_name}`;
+
+      dispatch<any>(
+        setUserData({
+          key: "user_id",
+          value: savedUser?.user_id,
+        })
+      );
+    } else if (name === "room") {
+      resualt = room?.list.find((item: any) => item.id == savedUser?.room_id);
+      resualt = `${resualt?.name === "room" ? "اتاق" : "پذیرش"}${
+        resualt?.number
+      }-${resualt?.floor_name}`;
+
+      dispatch<any>(
+        setUserData({
+          key: "room_id",
+          value: savedUser?.room_id,
+        })
+      );
+    }
+
+    return resualt;
+  };
   return (
     <Box
       sx={{
@@ -144,7 +195,7 @@ const User: React.FC = () => {
             renderInput={(params) => (
               <TextField
                 {...params}
-                placeholder="انتخاب اتاق"
+                placeholder={!checkBox ? "انتخاب اتاق" : getExactDoctor("room")}
                 inputProps={{
                   ...params.inputProps,
                   autoComplete: "new-password", // disable autocomplete and autofill
@@ -202,7 +253,7 @@ const User: React.FC = () => {
               <TextField
                 autoComplete="none"
                 {...params}
-                placeholder=" نام پزشک"
+                placeholder={!checkBox ? " نام پزشک" : getExactDoctor("doctor")}
                 inputProps={{
                   ...params.inputProps,
                   autoComplete: "none", // disable autocomplete and autofill
@@ -218,11 +269,16 @@ const User: React.FC = () => {
             justifyContent: "space-between",
           }}
         >
-          <FormControlLabel control={<Checkbox />} label="پیش فرض" />
+          <FormControlLabel
+            control={
+              <Checkbox checked={checkBox} onClick={() => checkBoxHandler()} />
+            }
+            label="پیش فرض"
+          />
 
           <Button
             disabled={
-              userData?.user_id?.length <= 0 || userData?.room_id?.length <= 0
+              userData?.user_id == null || userData?.room_id == null
                 ? true
                 : false
             }
