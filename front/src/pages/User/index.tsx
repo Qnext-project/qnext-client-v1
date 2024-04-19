@@ -72,7 +72,9 @@ const User: React.FC = () => {
         }
       }
     } else {
+      localStorage.setItem("userData", JSON.stringify(userData));
       dispatch(setCheckBoxValue());
+      
     }
   };
 
