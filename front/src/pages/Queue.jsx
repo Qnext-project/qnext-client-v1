@@ -11,36 +11,21 @@ import {
 } from "../Redux/slices/Admin";
 
 export const Queue = () => {
-  const [userName, setUsername] = useState("");
-  useEffect(() => {
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    setUsername(userInfo?.username);
-  }, []);
+  // const [userName, setUsername] = useState("");
+  // useEffect(() => {
+  //   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  //   setUsername(userInfo?.username);
+  // }, []);
   const { queueDt, activeQueueCard } = useSelector((state) => state.admin);
   const { floor_id } = useSelector((state) => state.general);
-
-  const requestNotificationPermission = () => {
-    if (window.Notification) {
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Notification permission granted");
-        } else {
-          console.log("Notification permission denied");
-        }
-      });
-    }
-  };
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(floor_id);
     dispatch(getAdminsListWithDoctor(floor_id));
   }, [floor_id]);
 
   useEffect(() => {
-    console.log(floor_id);
-
     const interval = setInterval(() => {
       dispatch(getAdminsListWithDoctor(floor_id));
     }, 3000);
@@ -80,7 +65,6 @@ export const Queue = () => {
       }
     }
   };
-
 
   useEffect(() => {
     let audios = JSON.parse(localStorage.getItem("audios"));

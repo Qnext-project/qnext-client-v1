@@ -136,10 +136,9 @@ export const EditExpTitle = createAsyncThunk(
   }
 );
 
-
 export const createNewRoom = createAsyncThunk(
   "admin/ new room",
-  async (floor_id:string, { getState }) => {
+  async (floor_id: string, { getState }) => {
     const state = getState() as { admin: States };
 
     const { name, number, media_id } = state.admin.room;
@@ -147,7 +146,7 @@ export const createNewRoom = createAsyncThunk(
       name,
       number,
       media_id,
-      floor_id
+      floor_id,
     });
   }
 );
@@ -163,7 +162,10 @@ export const deleteRoom = createAsyncThunk(
 );
 export const editRoom = createAsyncThunk(
   "admin/room edit",
-  async ({room_id,floor_id}:{room_id: string,floor_id:string}, { getState }) => {
+  async (
+    { room_id, floor_id }: { room_id: string; floor_id: string },
+    { getState }
+  ) => {
     const state = getState() as { admin: States };
     const { name, number, media_id } = state.admin.room;
 
@@ -171,34 +173,33 @@ export const editRoom = createAsyncThunk(
       name,
       number,
       media_id,
-      floor_id
+      floor_id,
     });
   }
 );
 
 export const getAdminsListWithDoctor = createAsyncThunk(
   "admin/getAdminList",
-  async (floor_id:string, { getState, dispatch }) => {
+  async (floor_id: string, { getState, dispatch }) => {
     const getstate = getState() as { admin: States };
-    return await Axios.get(`api/v1/admin/list/queue/${floor_id}`).then((res) => {
-      const differentData = getstate.admin?.queueDt?.data?.filter(
-        (dt: any) =>
-          !res?.data?.some(
-            (dt2: any) =>
-              dt?.current_turn_number === dt2?.current_turn_number &&
-              dt2?.current_turn_number != null
-          )
-      );
-      if (differentData?.length > 0) {
-        console.log(differentData);
-        
-        dispatch(getDocVoice(differentData));
+    return await Axios.get(`api/v1/admin/list/queue/${floor_id}`).then(
+      (res) => {
+        const differentData = getstate.admin?.queueDt?.data?.filter(
+          (dt: any) =>
+            !res?.data?.some(
+              (dt2: any) =>
+                dt?.current_turn_number === dt2?.current_turn_number &&
+                dt2?.current_turn_number != null
+            )
+        );
+        if (differentData?.length > 0) {
+          dispatch(getDocVoice(differentData));
+        }
+        return res;
       }
-      return res;
-    });
+    );
   }
 );
-
 
 export const getDocVoice = createAsyncThunk(
   "admin/getDocVoice",
@@ -206,12 +207,12 @@ export const getDocVoice = createAsyncThunk(
     for (const data of dt) {
       let audios: any[] = [];
       dispatch(setActiveQueueCard(data?.id)); // comment this later
-          console.log(data);
+      console.log(data);
 
       await Axios.post("api/v1/admin/doctor/turn/voice", data).then(
         async (res) => {
           console.log(res.data);
-          
+
           res?.data["num"]?.url ? audios.push(res?.data["num"]?.url) : null;
           res?.data["numbers"]?.map((n: any) =>
             n?.url ? audios.push(n?.url) : null
@@ -266,7 +267,7 @@ export const editFloor = createAsyncThunk(
     const { name } = state.admin.floor;
 
     return await Axios.put(`api/v1/admin/floors/${floor_id}`, {
-      name
+      name,
     });
   }
 );
@@ -274,12 +275,12 @@ export const editFloor = createAsyncThunk(
 //!exit room
 export const purgeUser = createAsyncThunk(
   "admin/userPurge",
-  async (user_id:string) => {
+  async (user_id: string) => {
     return await Axios.post(`api/v1/admin/doctor/purge/user`, {
-      user_id
-    })
+      user_id,
+    });
   }
-)
+);
 
 export const admin = createSlice({
   name: "admin",
@@ -522,24 +523,24 @@ export const admin = createSlice({
       state.loading = false;
     });
 
-      builder.addCase(deleteFloor.pending, (state) => {
+    builder.addCase(deleteFloor.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(deleteFloor.fulfilled, (state) => {
       state.loading = false;
       state.refresh = true;
-      toastHandler("با موفقیت حذف شد")
+      toastHandler("با موفقیت حذف شد");
     });
     builder.addCase(deleteFloor.rejected, (state) => {
       state.loading = false;
     });
-        builder.addCase(editFloor.pending, (state) => {
+    builder.addCase(editFloor.pending, (state) => {
       state.loading = true;
     });
     builder.addCase(editFloor.fulfilled, (state) => {
       state.loading = false;
       state.refresh = true;
-       toastHandler("با موفقیت انجام شد")
+      toastHandler("با موفقیت انجام شد");
     });
     builder.addCase(editFloor.rejected, (state) => {
       state.loading = false;
@@ -548,16 +549,16 @@ export const admin = createSlice({
     //?exit room
 
     builder.addCase(purgeUser.pending, (state) => {
-      state.loading=true
-    })
+      state.loading = true;
+    });
     builder.addCase(purgeUser.fulfilled, (state) => {
-      state.loading = false
-        toastHandler(" خروج با موفقیت انجام شد")
-    })
+      state.loading = false;
+      toastHandler(" خروج با موفقیت انجام شد");
+    });
     builder.addCase(purgeUser.rejected, (state) => {
-      state.loading = false
-       toastHandler("خطایی رخ داده است مجدد تلاش کنید")
-    })
+      state.loading = false;
+      toastHandler("خطایی رخ داده است مجدد تلاش کنید");
+    });
   },
 });
 
