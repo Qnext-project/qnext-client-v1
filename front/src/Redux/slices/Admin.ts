@@ -192,8 +192,28 @@ export const getAdminsListWithDoctor = createAsyncThunk(
                 dt2?.current_turn_number != null
             )
         );
-        if (differentData?.length > 0) {
-          dispatch(getDocVoice(differentData));
+        // console.log(differentData.every((item: any) => item !== null));
+
+        // if (differentData?.length > 0) {
+        //   console.log("here")
+        //   console.log(differentData)
+          
+        //   if (differentData.filter((item: any) => item != null)) {
+        //     console.log(differentData);
+
+        //     dispatch(getDocVoice(differentData));
+        //   }
+        // }
+           const filteredDifferentData = differentData.filter((item: any) => item !== null);
+
+        console.log(filteredDifferentData.every((item: any) => item !== null));
+
+        if (filteredDifferentData.length > 0) {
+          console.log("here");
+          console.log(filteredDifferentData);
+
+          // No need to check for null items again here
+          dispatch(getDocVoice(filteredDifferentData));
         }
         return res;
       }
@@ -204,6 +224,8 @@ export const getAdminsListWithDoctor = createAsyncThunk(
 export const getDocVoice = createAsyncThunk(
   "admin/getDocVoice",
   async (dt: any, { dispatch }) => {
+    console.log(dt);
+
     for (const data of dt) {
       let audios: any[] = [];
       dispatch(setActiveQueueCard(data?.id)); // comment this later
@@ -493,6 +515,8 @@ export const admin = createSlice({
     });
     builder.addCase(getAdminsListWithDoctor.fulfilled, (state, { payload }) => {
       state.queueDt.loading = false;
+      console.log((payload as any)?.data);
+
       state.queueDt.data = (payload as any)?.data;
     });
     builder.addCase(getAdminsListWithDoctor.rejected, (state, {}) => {

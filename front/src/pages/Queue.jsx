@@ -11,11 +11,7 @@ import {
 } from "../Redux/slices/Admin";
 
 export const Queue = () => {
-  // const [userName, setUsername] = useState("");
-  // useEffect(() => {
-  //   const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-  //   setUsername(userInfo?.username);
-  // }, []);
+
   const { queueDt, activeQueueCard } = useSelector((state) => state.admin);
   const { floor_id } = useSelector((state) => state.general);
 
@@ -23,7 +19,7 @@ export const Queue = () => {
 
   useEffect(() => {
     dispatch(getAdminsListWithDoctor(floor_id));
-  }, [floor_id]);
+  }, []);//!floor_id was deleted
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,7 +55,7 @@ export const Queue = () => {
 
       if (audios.length > 0) {
         localStorage.setItem("audios", JSON.stringify(audios));
-        playNextAudio(audios);
+        await playNextAudio(audios);
       } else {
         localStorage.removeItem("audios");
       }
