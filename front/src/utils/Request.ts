@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL:"https://api.artps.ir/",
+    baseURL:"http://192.168.1.131:8000/",
     timeout: 60000,
 });
 

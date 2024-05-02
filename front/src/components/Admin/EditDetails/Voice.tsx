@@ -43,7 +43,7 @@ export const Voice: React.FC = () => {
     formData.append("audios[]", uploadedFile);
 
     const res = await axios.post(
-      `https://api.artps.ir/api/v1/admin/media/${voiceType}`,
+      `https://192.168.1.131:8000/api/v1/admin/media/${voiceType}`,
       formData,
       {
         headers: {
