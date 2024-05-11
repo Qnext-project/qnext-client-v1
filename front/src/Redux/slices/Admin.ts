@@ -192,26 +192,10 @@ export const getAdminsListWithDoctor = createAsyncThunk(
                 dt2?.current_turn_number != null
             )
         );
-        // console.log(differentData.every((item: any) => item !== null));
-
-        // if (differentData?.length > 0) {
-        //   console.log("here")
-        //   console.log(differentData)
-          
-        //   if (differentData.filter((item: any) => item != null)) {
-        //     console.log(differentData);
-
-        //     dispatch(getDocVoice(differentData));
-        //   }
-        // }
-           const filteredDifferentData = differentData.filter((item: any) => item !== null);
-
-        console.log(filteredDifferentData.every((item: any) => item !== null));
-
+        const filteredDifferentData = differentData.filter(
+          (item: any) => item !== null
+        );
         if (filteredDifferentData.length > 0) {
-          console.log("here");
-          console.log(filteredDifferentData);
-
           // No need to check for null items again here
           dispatch(getDocVoice(filteredDifferentData));
         }

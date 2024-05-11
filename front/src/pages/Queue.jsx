@@ -11,7 +11,8 @@ import {
 } from "../Redux/slices/Admin";
 
 export const Queue = () => {
-
+  const [localQueue, setLocalQueue] = useState()
+  const [isPlaying, setIsPlaying] = useState(true);
   const { queueDt, activeQueueCard } = useSelector((state) => state.admin);
   const { floor_id } = useSelector((state) => state.general);
 
@@ -19,7 +20,7 @@ export const Queue = () => {
 
   useEffect(() => {
     dispatch(getAdminsListWithDoctor(floor_id));
-  }, []);//!floor_id was deleted
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,24 +35,35 @@ export const Queue = () => {
   const playAudio = async (audios) => {
     for (let i = 0; i < audios.length; i++) {
       let audio = new Audio(audios[i]);
-      if (audio === undefined) {
-        console.log("Error creating audio instance");
-      }
-      await audio.play();
-      await new Promise((resolve) => audio.addEventListener("ended", resolve));
+      await new Promise((resolve) => {
+        audio.addEventListener("play", () => {
+          console.log("Audio is playing!");
+        });
+        audio.addEventListener("ended", () => {
+          resolve();
+          console.log("Audio is  not playing!");
+        });
+        audio.play();
+      });
     }
   };
+
 
   const playNextAudio = async (audios) => {
     if (audios.length > 0 && activeQueueCard === null) {
       let toPlay = audios[0];
       dispatch(setActiveQueueCard(toPlay?.id));
+      console.log("Audio is playing!", isPlaying);
 
+      setIsPlaying(false)
       await playAudio(toPlay?.audios);
+      setIsPlaying(true)
 
+      console.log("Audio is not playing!", isPlaying);
       dispatch(setActiveQueueCard(null));
 
-      audios.splice(0, 1);
+      // audios.splice(0, 1);
+      audios.shift();
 
       if (audios.length > 0) {
         localStorage.setItem("audios", JSON.stringify(audios));
@@ -65,9 +77,19 @@ export const Queue = () => {
   useEffect(() => {
     let audios = JSON.parse(localStorage.getItem("audios"));
     if (audios?.length > 0 && activeQueueCard === null) {
-      playNextAudio(audios);
+
+      setLocalQueue(audios)
     }
   }, [activeQueueCard]);
+
+  useEffect(() => {
+    console.log("hrer");
+    if (isPlaying) {
+
+      playNextAudio(localQueue);
+    }
+  }, [localQueue, isPlaying])
+
 
   const { fullScreen } = useSelector((state) => state.general);
   return (
